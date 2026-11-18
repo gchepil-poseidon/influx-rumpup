@@ -61,3 +61,13 @@ The practical outcome is to reduce incidents where schemas, writes, queries, ret
 7. Monitor Cloud 1 and create an incident triage checklist.
 8. Review the current work schema and queries using redacted samples.
 
+
+## Workspace setup (Codex + Claude Code, multiple computers)
+
+- The repository is the single source of truth; sync between computers with git (`git pull` before a session, commit and push after).
+- `AGENTS.md` holds the shared instructions. `CLAUDE.md` only imports it for Claude Code.
+- The `influxdb-docs` MCP server is configured in both tools:
+  - Codex: `.codex/config.toml`
+  - Claude Code: `.mcp.json` (approved in `.claude/settings.json`)
+- The server uses OAuth. Sign in once per computer and per tool; tokens stay in each tool's local credential store, never in the repository.
+- Machine-specific settings go in `.claude/settings.local.json` or environment variables, both ignored by git.
