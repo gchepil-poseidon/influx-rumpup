@@ -1,0 +1,5 @@
+[mcp_servers.influxdb-docs]
+enabled = true
+url = "https://influxdb-docs.mcp.kapa.ai"
+startup_timeout_sec = 20.0
+tool_timeout_sec = 60.0
