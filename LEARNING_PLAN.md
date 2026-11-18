@@ -267,7 +267,7 @@
 | Урок | Статус | Артефакт / нотатка |
 |---|---|---|
 | 0. Карта системи | Не розпочато | |
-| 1. Що таке TSDB | Матеріал підготовлено | `lessons/01-what-is-a-tsdb.md` |
+| 1. Що таке TSDB | Пройдено 2026-11-18 | `lessons/01-what-is-a-tsdb.md`, результати в `progress.md` |
 | 2. Модель InfluxDB v1 | Матеріал підготовлено | `lessons/02-influxdb-v1-data-model.md` |
 | 3. Schema і cardinality | Не розпочато | |
 | 4. Write path | Не розпочато | |
