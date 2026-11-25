@@ -175,3 +175,36 @@ Redacted масштаб: приблизно 5 000 значень `asset_id`, о�
 - Провести локальну практику з `EXPLAIN` (див. конспект).
 
 Джерела Enterprise v1: [EXPLAIN / EXPLAIN ANALYZE](https://docs.influxdata.com/enterprise_influxdb/v1/query_language/spec/#explain-analyze), [query management](https://docs.influxdata.com/enterprise_influxdb/v1/troubleshooting/query_management/influxql_query_management/), [shard group duration](https://docs.influxdata.com/enterprise_influxdb/v1/concepts/schema_and_data_layout/#shard-group-duration-recommendations), [filter meta queries by time](https://docs.influxdata.com/enterprise_influxdb/v1/query_language/explore-schema/#filter-meta-queries-by-time).
+
+## Урок 4. Запис: line protocol і write path — пройдено 2026-11-25 (теоретично)
+
+Формат: інтерактивна сесія, конспект у [`lessons/04-write-path.md`](lessons/04-write-path.md). Урок теоретичний: практику користувач робить у реальному проєкті, локальний стенд не плануємо.
+
+### Що засвоєно
+
+- Write path v1/Enterprise: координатор → shard group за timestamp → 2 власники → WAL + cache → TSM → compaction. Кожен зачеплений шард тримає свій cache.
+- `400` partial write означає, що валідні points записані. `5xx`/таймаут можна повторювати, бо запис з явним timestamp ідемпотентний.
+- Політика помилок наших буферів перевернута: основний відкидає, bulk повторює без меж. Правильний напрям — circuit breaker, наростаючий backoff і обмеження буфера (запропоновано самостійно).
+- Smoothing `INTO` — головний write amplifier: ~370× сирого потоку на синтетиці. Користувач погодився, що це треба виправити.
+
+### Результати перевірок
+
+| Перевірка | Результат |
+|---|---|
+| Розмір batch 10 000 × 40 fields | ✅ ~10 MB. Сплутано `max-body-size` 25 MB (вкладаємося) з рекомендацією 5 000 рядків (перевищуємо) |
+| Сценарій «кластер гальмує 90 с» | Частково. ✅ ріст навантаження, circuit breaker і backoff. Помилка: основний буфер не зберігає batch, а відкидає. Не розглянуто `No host available` для алертів і cron |
+| Smoothing amplification | ✅ висновок. Арифметика: 31 × 12 = 600 замість 372 |
+| Фінальна оцінка FTP-імпорту | Частково. ✅ ~5 shard groups, висновок «розбивати й розтягувати». Помилки: points помножено на fields (18 млн замість 432 000 points, 44 batch, ~4 хв), поля названо series (сенсори вже існують → 0 нових series, 40 fields — це field streams) |
+
+### Факти з production, принесені на уроці
+
+- `Couldn't write` у Cloud Logging за місяць: 3 випадки, ~1 000 points на весь потік. Втрати основного буфера реальні в коді, але рідкісні → низький пріоритет.
+- FTP-джерела формують CSV не більше доби й 2–3 MB. У коді бекенду цього обмеження немає.
+
+### Прогалини, до яких повернутися
+
+- Points ≠ field values: batch і shard рахуються в points, fields множать лише байти й field streams.
+- Fields не створюють series (повтор з уроку 2).
+- Користувач просить менше ручної арифметики й більше концептуальних висновків. Розрахунки давати готовими, а перевіряти розуміння одиниць.
+
+Джерела Enterprise v1: [write API і коди відповіді](https://docs.influxdata.com/enterprise_influxdb/v1/guides/write_data/#http-response-summary), [line protocol](https://docs.influxdata.com/enterprise_influxdb/v1/write_protocols/line_protocol_reference/), [backfill і shard duration](https://docs.influxdata.com/enterprise_influxdb/v1/concepts/schema_and_data_layout/#shard-group-duration-for-backfilling), [historical data FAQ](https://docs.influxdata.com/enterprise_influxdb/v1/troubleshooting/frequently-asked-questions/#what-are-the-configuration-recommendations-and-schema-guidelines-for-writing-sparse-historical-data), [write consistency і hinted handoff](https://docs.influxdata.com/enterprise_influxdb/v1/concepts/clustering/#write-consistency), [`write-timeout`](https://docs.influxdata.com/enterprise_influxdb/v1/administration/configure/config-data-nodes/#write-timeout).

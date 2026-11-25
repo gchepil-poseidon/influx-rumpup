@@ -273,7 +273,7 @@
 | 1. Що таке TSDB | Пройдено 2026-11-18 | `lessons/01-what-is-a-tsdb.md`, результати в `progress.md` |
 | 2. Модель InfluxDB v1 | Пройдено 2026-11-24 | `lessons/02-influxdb-v1-data-model.md`, результати в `progress.md` |
 | 3. Schema і cardinality | Пройдено 2026-11-24 | [Результати практики](progress.md#урок-3-теги-поля-і-cardinality--пройдено-2026-11-24) |
-| 4. Write path | Не розпочато | |
+| 4. Write path | Пройдено 2026-11-25 (теоретично) | [`lessons/04-write-path.md`](lessons/04-write-path.md), результати в `progress.md` |
 | 5. Node.js client | Не розпочато | |
 | 6. InfluxQL | Не розпочато | |
 | 7. Query cost | Пройдено 2026-11-25 (концептуально, практика з `EXPLAIN` відкладена) | [`lessons/07-query-cost.md`](lessons/07-query-cost.md), результати в `progress.md` |
