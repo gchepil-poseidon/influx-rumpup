@@ -111,17 +111,19 @@
 
 ### Урок 5. Node.js client у нашій версійній реальності
 
-**Питання:** які частини v2 JavaScript client справді сумісні з Cloud 1?
+**Питання:** як наш бекенд насправді говорить з Cloud 1 і де він створює або втрачає навантаження?
 
-- клієнт, wire protocol та database engine — різні рівні;
-- v2 write endpoint на InfluxDB 1.8+;
-- відображення `bucket` → `database/retention-policy`, ігнорування `org`;
+Уточнено 2026-11-25 з коду: бекенд використовує v1-клієнт npm `influx` (node-influx 5.12), а не v2 `@influxdata/influxdb-client`. Деталі — у [карті системи](notes/system-map.md#підключення-з-бекенду-з-коду-2026-11-25).
+
+- клієнт, wire protocol та database engine — різні рівні; node-influx → `/write` + `/query` (InfluxQL);
+- pool: `requestTimeout`, `maxRetries`, backoff і чому з одним хостом ретраї не працюють;
+- три власні in-memory буфери: batch size, умови флашу, відкидання batch при помилці, безмежний retry у bulk;
+- кілька інстансів App Engine = кілька незалежних буферів і cron-процесів;
+- `setupInflux()`: `CREATE DATABASE` / `CREATE RETENTION POLICY` на старті та їхні ризики;
 - auth і конфігурація без hardcoded secrets;
-- write options: batch size, flush interval, timeout, retries і buffer limits;
-- InfluxQL `/query` окремо від v2/Flux query examples;
-- migration-friendly adapter навколо клієнта.
+- для довідки: v2 client і `/api/v2/write` на 1.8+ (`bucket` → `database/retention-policy`) — лише як шлях міграції.
 
-**Практика:** розібрати поточний redacted Node.js writer і позначити всі параметри, що впливають на навантаження.
+**Практика:** розібрати `influxBatchWriter` і pool node-influx, позначити всі параметри, що впливають на навантаження та втрату даних, і запропонувати безпечнішу політику помилок.
 
 **Критерій:** жоден приклад із документації v2 не переноситься на Cloud 1 без перевірки endpoint і semantics.
 
@@ -267,9 +269,9 @@
 
 | Урок | Статус | Артефакт / нотатка |
 |---|---|---|
-| 0. Карта системи | Не розпочато | |
+| 0. Карта системи | У роботі | [`notes/system-map.md`](notes/system-map.md): схема, RP, запити дашборда, підключення з коду |
 | 1. Що таке TSDB | Пройдено 2026-11-18 | `lessons/01-what-is-a-tsdb.md`, результати в `progress.md` |
-| 2. Модель InfluxDB v1 | Матеріал підготовлено | `lessons/02-influxdb-v1-data-model.md` |
+| 2. Модель InfluxDB v1 | Пройдено 2026-11-24 | `lessons/02-influxdb-v1-data-model.md`, результати в `progress.md` |
 | 3. Schema і cardinality | Пройдено 2026-11-24 | [Результати практики](progress.md#урок-3-теги-поля-і-cardinality--пройдено-2026-11-24) |
 | 4. Write path | Не розпочато | |
 | 5. Node.js client | Не розпочато | |
