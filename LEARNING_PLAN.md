@@ -276,7 +276,7 @@
 | 4. Write path | Не розпочато | |
 | 5. Node.js client | Не розпочато | |
 | 6. InfluxQL | Не розпочато | |
-| 7. Query cost | Не розпочато | |
+| 7. Query cost | Пройдено 2026-11-25 (концептуально, практика з `EXPLAIN` відкладена) | [`lessons/07-query-cost.md`](lessons/07-query-cost.md), результати в `progress.md` |
 | 8. Retention і downsampling | Не розпочато | |
 | 9. Operations | Не розпочато | |
 | 10. Workload review | Не розпочато | |
