@@ -17,6 +17,7 @@ The practical outcome is to reduce incidents where schemas, writes, queries, ret
 ## How we learn
 
 - Use short lessons built around real work scenarios, followed by a safe exercise and a small knowledge check.
+- Read the [production system map](notes/system-map.md) before preparing a lesson. Use its sensor workloads, schema, and query shapes as the default examples. Use redacted extracts or local synthetic fixtures that preserve the relevant production characteristics for exercises.
 - Explain the data model first: measurement, tag, field, point, series, shard, database, and retention policy.
 - Prioritize schema design, series cardinality, write patterns, query cost, retention/downsampling, monitoring, and incident diagnosis.
 - Connect every rule to its operational consequence: memory, CPU, disk, network, latency, or cardinality.

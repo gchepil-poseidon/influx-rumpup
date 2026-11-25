@@ -154,7 +154,7 @@
 - concurrency limits і application-side guardrails;
 - downsample-first запити для довгих періодів.
 
-**Практика:** взяти аналог дворічного запиту, оцінити його вартість, а потім переписати на кілька безпечних варіантів.
+**Практика:** взяти довгий запит з [карти production](notes/system-map.md#запити-дашборда-для-oil-quality). Оцінити вартість читання `oil_quality` і `oil_quality_daily`, звірити сенс метрик і побудувати безпечні варіанти для одного та кількох сенсорів.
 
 **Критерій:** ризик оцінюється до виконання, а не після спостереження CPU/OOM.
 
@@ -194,6 +194,7 @@
 
 - інвентар writer-ів, measurements, RPs, cardinality та top queries;
 - аналіз redacted line protocol і Node.js config;
+- оцінка [кейсу з тегом компанії](notes/system-map.md#кейс-для-уроку-з-тегом-компанії) для фільтрації, історії передачі сенсорів і cardinality;
 - risk matrix: probability × cluster impact;
 - quick wins, guardrails і довші schema changes;
 - production checklist для query/write changes.
@@ -269,7 +270,7 @@
 | 0. Карта системи | Не розпочато | |
 | 1. Що таке TSDB | Пройдено 2026-11-18 | `lessons/01-what-is-a-tsdb.md`, результати в `progress.md` |
 | 2. Модель InfluxDB v1 | Матеріал підготовлено | `lessons/02-influxdb-v1-data-model.md` |
-| 3. Schema і cardinality | Не розпочато | |
+| 3. Schema і cardinality | Пройдено 2026-11-24 | [Результати практики](progress.md#урок-3-теги-поля-і-cardinality--пройдено-2026-11-24) |
 | 4. Write path | Не розпочато | |
 | 5. Node.js client | Не розпочато | |
 | 6. InfluxQL | Не розпочато | |
